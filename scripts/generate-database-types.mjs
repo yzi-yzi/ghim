@@ -22,9 +22,13 @@ if (result.status !== 0) {
 // a developer still has the previous image cached under the same local tag.
 const normalizedTypes = result.stdout
   .replace(
-    /^(\s{2}(?:TableName|EnumName|PublicCompositeTypeName) extends) \(/gm,
+    /^(\s{2}(?:TableName|EnumName|CompositeTypeName) extends) \(/gm,
     "$1 ",
   )
   .replace(/^(\s{4}: never)\) = never,$/gm, "$1 = never,");
+
+if (/^\s{2}(?:TableName|EnumName|CompositeTypeName) extends \(/m.test(normalizedTypes)) {
+  throw new Error("Unsupported postgres-meta helper constraint formatting");
+}
 
 writeFileSync("packages/data/src/database.types.ts", normalizedTypes);

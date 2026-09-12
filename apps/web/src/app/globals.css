@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+:root {
+  --paper: oklch(0.965 0.025 91);
+  --paper-deep: oklch(0.92 0.035 88);
+  --ink: oklch(0.25 0.025 76);
+  --forest: oklch(0.36 0.075 151);
+  --forest-dark: oklch(0.27 0.06 151);
+  --mustard: oklch(0.72 0.105 83);
+  --rust: oklch(0.52 0.12 42);
+  --rule: oklch(0.68 0.035 82 / 55%);
+  --shadow: oklch(0.22 0.03 70 / 14%);
+}
+
+@theme inline {
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --color-primary: var(--forest);
+  --color-primary-foreground: var(--paper);
+  --color-accent: var(--mustard);
+  --color-border: var(--rule);
+  --font-sans: "Avenir Next", Avenir, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Iowan Old Style, Baskerville, "Times New Roman", ui-serif, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--forest-dark);
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(90deg, transparent 0 49px, color-mix(in oklab, var(--rust) 35%, transparent) 50px 51px, transparent 52px),
+    repeating-linear-gradient(0deg, transparent 0 31px, color-mix(in oklab, var(--rule) 30%, transparent) 32px 33px),
+    var(--paper);
+  font-family: var(--font-sans);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.library-shell {
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  padding: clamp(1.5rem, 5vw, 5rem);
+}
+
+.hero {
+  width: min(100%, 62rem);
+  padding: clamp(2rem, 6vw, 5rem);
+  border: 1px solid var(--rule);
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--paper) 94%, white);
+  box-shadow: 0 1.5rem 4rem var(--shadow);
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: var(--rust);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+h1 {
+  max-width: 12ch;
+  margin: 0;
+  color: var(--forest-dark);
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 9vw, 7.5rem);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 42rem;
+  margin: 2rem 0 0;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.7;
+}
+
+.learning-path {
+  display: grid;
+  gap: 0;
+  margin: 3rem 0 0;
+  padding: 0;
+  border-block: 1px solid var(--rule);
+  list-style: none;
+}
+
+.learning-path li {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.learning-path li:last-child {
+  border-bottom: 0;
+}
+
+.learning-path span {
+  color: var(--forest);
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.status-stamp {
+  width: fit-content;
+  margin: 2rem 0 0 auto;
+  padding: 0.45rem 0.7rem;
+  border: 2px solid color-mix(in oklab, var(--forest) 75%, transparent);
+  color: var(--forest);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  transform: rotate(-1deg);
+}
+
+@media (min-width: 48rem) {
+  .learning-path {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .learning-path li {
+    grid-template-columns: auto 1fr;
+    padding-inline: 1.25rem;
+    border-right: 1px solid var(--rule);
+    border-bottom: 0;
+  }
+
+  .learning-path li:first-child {
+    padding-left: 0;
+  }
+
+  .learning-path li:last-child {
+    padding-right: 0;
+    border-right: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero {
+    animation: settle 500ms ease-out both;
+  }
+
+  @keyframes settle {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+  }
+}

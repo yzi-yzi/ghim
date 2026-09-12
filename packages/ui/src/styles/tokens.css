@@ -1,0 +1,46 @@
+:root {
+  color-scheme: light;
+  --background: oklch(0.965 0.025 91);
+  --foreground: oklch(0.25 0.025 76);
+  --card: oklch(0.985 0.014 91);
+  --card-foreground: oklch(0.25 0.025 76);
+  --popover: oklch(0.985 0.014 91);
+  --popover-foreground: oklch(0.25 0.025 76);
+  --primary: oklch(0.36 0.075 151);
+  --primary-strong: oklch(0.27 0.06 151);
+  --primary-foreground: oklch(0.97 0.02 91);
+  --secondary: oklch(0.91 0.035 88);
+  --secondary-foreground: oklch(0.29 0.04 145);
+  --muted: oklch(0.925 0.027 89);
+  --muted-foreground: oklch(0.48 0.025 76);
+  --accent: oklch(0.78 0.105 83);
+  --accent-strong: oklch(0.64 0.11 72);
+  --accent-foreground: oklch(0.25 0.045 66);
+  --destructive: oklch(0.49 0.15 31);
+  --destructive-foreground: oklch(0.98 0.012 91);
+  --border: oklch(0.68 0.035 82 / 58%);
+  --input: oklch(0.63 0.035 82 / 62%);
+  --input-background: oklch(0.99 0.01 91);
+  --ring: oklch(0.42 0.085 151);
+  --focus-ring-color: color-mix(in oklab, var(--ring) 30%, transparent);
+  --focus-ring-width: 3px;
+  --validation-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+  --paper-deep: oklch(0.91 0.04 88);
+  --rust: oklch(0.52 0.12 42);
+  --shadow-soft: oklch(0.22 0.03 70 / 13%);
+  --motion-duration-fast: 120ms;
+  --motion-duration-enter: 500ms;
+  --motion-duration-reduced: 0.01ms;
+  --motion-delay-enter: 90ms;
+  --radius: 0.5rem;
+  --font-sans: "Avenir Next", Avenir, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Iowan Old Style", Baskerville, "Times New Roman", ui-serif, serif;
+}
+
+@media (forced-colors: active) {
+  :root {
+    --border: CanvasText;
+    --input: CanvasText;
+    --ring: Highlight;
+  }
+}

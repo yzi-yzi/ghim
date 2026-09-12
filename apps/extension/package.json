@@ -1,0 +1,33 @@
+{
+  "name": "@ghim/extension",
+  "description": "Chrome-first capture companion for Ghim.",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "build": "npm run build:chrome && npm run build:edge",
+    "build:chrome": "wxt build --browser chrome",
+    "build:edge": "wxt build --browser edge",
+    "artifact": "wxt zip --browser chrome",
+    "lint": "eslint . --max-warnings=0",
+    "test": "vitest run",
+    "typecheck": "wxt prepare && tsc --noEmit",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "@ghim/ui": "0.0.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@wxt-dev/module-react": "1.1.5",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.5",
+    "typescript": "6.0.3",
+    "vitest": "5.0.0",
+    "wxt": "0.21.4"
+  }
+}

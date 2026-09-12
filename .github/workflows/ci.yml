@@ -37,3 +37,14 @@ jobs:
 
       - name: Verify workspace
         run: npm run check
+
+      - name: Package Chrome extension
+        run: npm run artifact --workspace @ghim/extension
+
+      - name: Retain extension artifact
+        uses: actions/upload-artifact@v7
+        with:
+          if-no-files-found: error
+          name: ghim-extension-${{ github.sha }}
+          path: apps/extension/.output/ghim-extension-0.0.0-chrome.zip
+          retention-days: 14

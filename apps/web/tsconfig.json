@@ -6,7 +6,8 @@
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@ghim/ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": [

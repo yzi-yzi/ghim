@@ -290,7 +290,7 @@ a {
 
 .demo-focus {
   border-color: var(--ring);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 28%, transparent);
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
 }
 
 .field-group {
@@ -386,11 +386,11 @@ a {
 @media (prefers-reduced-motion: no-preference) {
   .hero-copy,
   .capture-card {
-    animation: settle 500ms ease-out both;
+    animation: settle var(--motion-duration-enter) ease-out both;
   }
 
   .capture-card {
-    animation-delay: 90ms;
+    animation-delay: var(--motion-delay-enter);
   }
 
   @keyframes settle {
@@ -406,9 +406,9 @@ a {
   *::before,
   *::after {
     scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
+    animation-duration: var(--motion-duration-reduced) !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: var(--motion-duration-reduced) !important;
   }
 }
 

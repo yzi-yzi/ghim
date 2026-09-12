@@ -22,9 +22,20 @@
   --input: oklch(0.63 0.035 82 / 62%);
   --input-background: oklch(0.99 0.01 91);
   --ring: oklch(0.42 0.085 151);
+  --focus-ring-color: color-mix(in oklab, var(--ring) 30%, transparent);
+  --focus-ring-width: 3px;
+  --validation-ring-color: color-mix(
+    in oklab,
+    var(--destructive) 20%,
+    transparent
+  );
   --paper-deep: oklch(0.91 0.04 88);
   --rust: oklch(0.52 0.12 42);
   --shadow-soft: oklch(0.22 0.03 70 / 13%);
+  --motion-duration-fast: 120ms;
+  --motion-duration-enter: 500ms;
+  --motion-duration-reduced: 0.01ms;
+  --motion-delay-enter: 90ms;
   --radius: 0.5rem;
 }
 
@@ -51,6 +62,8 @@
   --color-input: var(--input);
   --color-input-background: var(--input-background);
   --color-ring: var(--ring);
+  --color-focus-ring: var(--focus-ring-color);
+  --color-validation-ring: var(--validation-ring-color);
   --font-sans: "Avenir Next", Avenir, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Iowan Old Style", Baskerville, "Times New Roman", ui-serif, serif;
   --radius-sm: calc(var(--radius) * 0.75);

@@ -38,6 +38,12 @@ jobs:
       - name: Verify workspace
         run: npm run check
 
+      - name: Start local database
+        run: npm run db:start
+
+      - name: Verify migrations, RLS and generated types
+        run: npm run db:verify
+
       - name: Package Chrome extension
         run: npm run artifact --workspace @ghim/extension
 

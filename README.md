@@ -21,6 +21,7 @@ Requirements:
 
 - Node.js 24.20.0 (see `.nvmrc`)
 - npm 11.19.0
+- Docker Desktop for the local Supabase/Postgres stack
 
 ```bash
 nvm use
@@ -36,6 +37,27 @@ Run every local quality gate with:
 npm run check
 ```
 
+### Local database
+
+SQL migrations under `supabase/migrations/` are the only database schema source
+of truth. The local stack requires only Postgres for database work; application
+services can be enabled later when their tickets need them.
+
+```bash
+# Start Postgres and apply the current migrations and seed.
+npm run db:start
+
+# Rebuild from an empty database, run pgTAP (including RLS isolation), run
+# database lint/advisors, and confirm the committed TypeScript types match.
+npm run db:verify
+
+# Stop the local stack when finished.
+npm run db:stop
+```
+
+Create each future migration with `npx supabase migration new <name>`, then run
+`npm run db:verify`. Do not edit the remote database as the source of truth.
+
 ## Workspace
 
 ```text
@@ -49,4 +71,6 @@ packages/ui/              Shared UI language and tokens
 packages/observability/   Privacy-safe telemetry boundary
 ```
 
-Production database migrations, authentication, Capture behavior, FSRS integration, and enrichment are intentionally deferred to their own implementation tickets.
+Authentication UI, Capture UI/API behavior, FSRS integration, and enrichment are
+implemented in their dedicated tickets. The learner-data schema and its atomic
+Capture, Review, and outbox boundaries live under `supabase/`.

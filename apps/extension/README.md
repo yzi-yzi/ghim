@@ -21,6 +21,6 @@ must justify each permission it adds—expected candidates are `activeTab`,
 Authentication, live Capture requests, offline retry, Firefox, and Safari are
 deliberately outside this ticket.
 
-API contracts and the typed client boundary belong to `@ghim/api`. The
-extension imports that shared boundary rather than maintaining its own HTTP
-transport or asserting response types locally.
+API contracts and the typed client boundary belong to `@ghim/api`. Extension
+features consume that shared boundary directly rather than maintaining a local
+HTTP transport or asserting response types themselves.

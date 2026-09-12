@@ -2,10 +2,16 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "declaration": true,
+    "exactOptionalPropertyTypes": false,
     "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "noEmit": false,
     "outDir": "dist",
+    "paths": {
+      "@ghim/ui/components/*": ["./src/components/*"],
+      "@ghim/ui/hooks/*": ["./src/hooks/*"],
+      "@ghim/ui/lib/*": ["./src/lib/*"]
+    },
     "rootDir": "src"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"]

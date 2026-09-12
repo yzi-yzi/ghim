@@ -5,13 +5,25 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./components/*": "./src/components/*.tsx",
+    "./hooks/*": "./src/hooks/*.ts",
+    "./lib/*": "./src/lib/*.ts",
     "./tokens.css": "./src/styles/tokens.css",
     "./theme.css": "./src/styles/theme.css"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
+    "@shadcn/react": "^0.3.1",
     "class-variance-authority": "^0.7.1",
-    "cn": "^0.2.6"
+    "cmdk": "^1.1.1",
+    "cn": "^0.2.6",
+    "date-fns": "^4.4.0",
+    "embla-carousel-react": "^8.6.0",
+    "input-otp": "^1.5.0",
+    "lucide-react": "^1.45.0",
+    "react-day-picker": "^10.0.1",
+    "react-resizable-panels": "^4.12.4",
+    "recharts": "^3.8.0"
   },
   "peerDependencies": {
     "react": "^19.3.0",
@@ -23,7 +35,8 @@
     "eslint": "9.39.5",
     "eslint-config-next": "16.3.5",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "shadcn": "^4.21.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

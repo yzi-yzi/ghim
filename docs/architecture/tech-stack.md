@@ -55,11 +55,11 @@ supabase/
 | Telemetry | Explicit PostHog events and redacted Sentry errors/traces; no captured Learner content |
 | Delivery | GitHub Actions, Vercel previews/production and CI-built extension artifacts |
 
-## UI direction: Vintage Library
+## UI direction: stock shadcn with Ghim colors
 
-The accessible behavior comes from Base UI, while Ghim owns its visual language. The theme uses forest green, cream paper and muted mustard or rust accents; display typography may use a bookish serif while controls and body copy remain a highly legible sans-serif. Books, paper, shelves, card-catalog labels, bookplates and library stamps are visual references. Texture stays subtle, contrast remains accessible, and the interface avoids neon green, glassmorphism and heavy fake wood or leather.
+Ghim uses the stock shadcn `base-nova` component source on Base UI. Component typography, spacing, radius, shadows, motion and variants remain at their generated defaults. The only visual override is the semantic color palette: forest green, cream and muted mustard or rust accents.
 
-Web and extension share semantic tokens and primitives, not whole layouts. Heatmap, streak, badge and rank visuals are Ghim brand modules rather than shadcn blocks.
+Web and extension share the semantic palette and stock primitives, not whole layouts. Product-specific modules such as the heatmap, streak, badge and rank compose those primitives without restyling them.
 
 ## Data and authority
 
@@ -85,7 +85,7 @@ Free-tier exhaustion must degrade enrichment or telemetry safely; it must not co
 ### Phase 0 — foundation
 
 1. Pin Node 24 and npm; scaffold workspaces, Turbo tasks, Next.js and WXT builds.
-2. Establish Vintage Library tokens and Base UI/shadcn primitives without building full product screens.
+2. Establish the Ghim semantic palette and stock Base UI/shadcn primitives without building full product screens.
 3. Add Supabase local development, SQL migrations, generated types, RLS and database tests.
 4. Add Hono `/api/v1`, Google Auth actor normalization, error envelope and API contract tests.
 5. Integrate pinned `ts-fsrs`, immutable review schema, atomic review commands and golden replay fixtures.

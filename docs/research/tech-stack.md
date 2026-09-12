@@ -17,7 +17,7 @@ Ghim nên bắt đầu bằng một **TypeScript modular monolith trong npm-work
 | Runtime/workspace | Node.js 24 LTS, TypeScript strict, npm workspaces, Turborepo local cache |
 | Web | Next.js 16 App Router, React 19, Node runtime |
 | Extension | WXT + React, Chrome/Edge MV3 trước; Firefox sau |
-| UI | Tailwind CSS 4, shadcn/ui trên Base UI, Lucide; Vintage Library design system; native React forms + Zod trước |
+| UI | Tailwind CSS 4, stock shadcn/ui `base-nova` trên Base UI, Lucide; Ghim semantic color palette; native React forms + Zod trước |
 | API | Hono đặt trong Next.js, REST `/api/v1`, Zod request/response schemas, Hono typed client |
 | Data/auth/storage | Supabase managed Postgres + Google-only Auth + Storage, Singapore region nếu available |
 | SQL/migrations | Supabase CLI SQL migrations là source of truth; generated DB types + `supabase-js`; atomic mutations qua SQL functions |
@@ -120,8 +120,8 @@ Lucide có tree-shakable icon packages và ISC/MIT-compatible source license; dy
 
 - Chọn **Tailwind CSS 4 + shadcn/ui Base UI**. Pin base trong `components.json`; không trộn Radix/Base UI tùy hứng.
 - `packages/ui` chứa semantic design tokens và primitives dùng chung. Web/extension có composition riêng vì density và surface khác nhau; không ép cùng page layout.
-- Visual direction đã chốt là **Vintage Library**: forest green làm màu chủ đạo; cream/paper cho surfaces; muted mustard và rust làm accent; imagery gợi sách, giấy, kệ sách và card catalog. Dùng serif có cá tính cho display/title và sans dễ đọc cho UI/body.
-- Mã hóa palette bằng semantic tokens (`background`, `paper`, `ink`, `primary`, `accent`, `warning`, `border`), không rải raw hex theo component. Texture giấy chỉ rất nhẹ, decorative và phải tắt/giảm ở dense review surfaces; contrast, focus và readability quan trọng hơn hiệu ứng vintage.
+- Visual direction dùng **stock shadcn `base-nova` + Ghim colors**: giữ nguyên typography, spacing, radius, shadows, motion và variants do registry sinh ra; chỉ đổi semantic colors sang forest green, cream và muted mustard/rust.
+- Mã hóa palette bằng semantic tokens (`background`, `foreground`, `primary`, `secondary`, `muted`, `accent`, `border`, `ring`), không rải raw colors hay override class bên trong từng component.
 - Bắt đầu với typography, spacing, color, radius, elevation, texture và motion tokens; heatmap/badge assets là brand components riêng, không phụ thuộc component library. Heatmap không chỉ dựa vào hue và badges phải vẫn rõ ở grayscale/locked state.
 - Dùng Lucide, static named imports; custom SVG cho Ghim mark, badge/rank và domain-specific illustrations.
 - Forms đơn giản dùng native `<form>`/uncontrolled inputs + Zod ở boundary. Chỉ thêm React Hook Form khi deck editor hoặc onboarding có dynamic arrays/conditional fields đủ phức tạp; không cài theo quán tính.
@@ -129,7 +129,7 @@ Lucide có tree-shakable icon packages và ISC/MIT-compatible source license; dy
 - Không thêm Redux/Zustand ở MVP; state review session là local state machine, server data là server/query state.
 - Accessibility gate: full keyboard review flow, visible focus, screen-reader labels, `prefers-reduced-motion`, color-independent heatmap legend và Vietnamese copy review.
 
-Không chọn Material UI/Ant Design vì visual opinion/bundle và override surface lớn cho một branded consumer product. Không dùng shadcn blocks nguyên xi làm product design; chỉ dùng accessible behavior/source foundation.
+Không chọn Material UI/Ant Design vì visual opinion/bundle và override surface lớn. Dùng nguyên source component shadcn; product UX đến từ composition và information hierarchy thay vì restyle primitives.
 
 ## 5. Database, auth và object storage
 
@@ -340,7 +340,7 @@ Không dùng Vercel Hobby cho bất kỳ commercial use nào, không chỉ “pr
 | npm workspaces + Turbo | npm/Turbo active official docs; optional remote cache | Node 24, Next, WXT | Low; standard package manifests/root lockfile | Chọn |
 | Next.js 16 | Current stable line | Node 20.9+, React 19 | Medium framework coupling; deploy portable | Chọn |
 | WXT 0.21 | Active, cross-browser, MIT | React/Vite, MV2/MV3 | Medium build-framework coupling; output is standard extension | Chọn |
-| shadcn + Base UI | Base UI stable/current 1.8; shadcn default | React 17+, Vite/Turbopack | Low because component code is owned; primitive API coupling remains | Chọn; custom Vintage Library visual layer |
+| shadcn + Base UI | Base UI stable/current 1.8; shadcn default | React 17+, Vite/Turbopack | Low because component code is owned; primitive API coupling remains | Chọn; stock `base-nova`, custom semantic colors only |
 | Supabase | Managed Postgres/Auth/Storage, active | JS/browser/server; Google web/Chrome extension documented | Medium-high Auth/Storage integration; Free has no automatic backup and may pause; DB itself portable Postgres | Chọn Free-first, Google-only, có dump + exit plan |
 | `supabase-js` + SQL | Official, schema-generated types | Supabase/PostgREST | Medium query API coupling; SQL/domain tables portable | Chọn, no ORM initially |
 | Hono | Active, MIT, documented Next adapter | Node/Vercel, standard fetch | Low-medium; wire remains REST/OpenAPI | Chọn |
@@ -357,7 +357,7 @@ Không dùng Vercel Hobby cho bất kỳ commercial use nào, không chỉ “pr
 ### Phase 0 — foundation
 
 1. Node 24 + npm workspaces + Turbo; scaffold `apps/web`, `apps/extension` and pure domain/scheduler/API packages.
-2. Next 16 + WXT builds; Tailwind/shadcn Base UI semantic tokens và Vintage Library foundation; CI dùng `npm ci`, format/typecheck/test/build.
+2. Next 16 + WXT builds; stock Tailwind/shadcn Base UI components và Ghim semantic colors; CI dùng `npm ci`, format/typecheck/test/build.
 3. Supabase local + Free hosted project, SQL migrations, seed, generated types, RLS tests và off-site dump/restore script/process.
 4. Hono `/api/v1`, Google-only Auth Actor context cho web/extension, error envelope, OpenAPI artifact.
 5. Pinned `ts-fsrs`, immutable event schema, atomic `record_review`, golden replay tests.
@@ -385,7 +385,7 @@ Không dùng Vercel Hobby cho bất kỳ commercial use nào, không chỉ “pr
 1. **Workspace:** npm workspaces + Turborepo; không pnpm.
 2. **Cost posture:** free-first cho Supabase, Inngest, PostHog và Sentry. Vercel Hobby chỉ dùng khi personal/non-commercial; chuyển Pro hoặc host Node/Docker khác trước commercial use.
 3. **Auth:** Google-only trên web và extension; learner mutations chỉ qua Ghim API, không cho extension query database trực tiếp.
-4. **UI:** Tailwind 4 + shadcn/Base UI là accessibility/component foundation; Vintage Library là visual system riêng, không dùng default shadcn look.
+4. **UI:** Tailwind 4 + shadcn/Base UI cung cấp nguyên component language; Ghim chỉ thay semantic color values.
 5. **Jobs:** Inngest Hobby sau transactional outbox/`JobDispatcher`; đo executions, concurrency, backlog và latency để quyết định Pro hay Supabase Queue worker.
 6. **Upgrade gates:** quota, reliability/support, backup/RPO và ToS là trigger. Mỗi quyết định nâng cấp phải ghi metric/constraint đã chạm, monthly cost mới và exit path.
 

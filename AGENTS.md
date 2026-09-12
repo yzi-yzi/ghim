@@ -18,6 +18,7 @@ This is a single-context repository. See `docs/agents/domain.md`.
 
 ## Product principles
 
+- Use stock shadcn `base-nova` components and defaults for typography, spacing, radius, shadows, motion, and variants. Ghim customizes only semantic color values in `packages/ui/src/styles/tokens.css`.
 - Optimize first for Vietnamese learners of English who find Anki too complex and lighter flashcard apps too shallow.
 - Keep FSRS scheduling correct while hiding scheduler complexity from learners.
 - Make capturing a word from a browser or entering one manually extremely simple.
@@ -30,4 +31,3 @@ This is a single-context repository. See `docs/agents/domain.md`.
 - Multi-session feature: `grill-with-docs` -> `to-spec` -> `to-tickets` -> implement one ticket at a time.
 - Difficult bug: `diagnosing-bugs` -> implement the authorized fix -> regression test.
 - Ambiguous epic: `wayfinder` -> `to-spec` -> `to-tickets` -> implement.
-

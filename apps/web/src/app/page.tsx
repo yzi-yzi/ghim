@@ -13,187 +13,103 @@ import {
 } from "@ghim/ui";
 
 const learningPath = [
-  {
-    detail: "Lưu ngay từ trang bạn đang đọc, không làm đứt mạch tập trung.",
-    title: "Bắt gặp",
-  },
-  {
-    detail: "Giữ câu gốc, nghĩa tiếng Việt và cách dùng thật sự hữu ích.",
-    title: "Ghim lại",
-  },
-  {
-    detail: "FSRS âm thầm chọn đúng lúc để từ quay trở lại.",
-    title: "Nhớ lâu",
-  },
+  ["Bắt gặp", "Chọn một từ ngay trên nội dung bạn đang đọc."],
+  ["Ghim lại", "Lưu từ, câu gốc và bộ từ chỉ trong một thao tác."],
+  ["Nhớ lâu", "Ôn ngắn gọn khi FSRS xác định từ đã tới hạn."],
 ] as const;
 
 export default function HomePage() {
   return (
-    <main className="library-page">
-      <header className="site-header">
-        <a className="wordmark" href="#top" aria-label="Ghim — về đầu trang">
-          <span aria-hidden="true">G</span>
-          <strong>Ghim</strong>
-        </a>
-        <Badge variant="outline">Nền tảng UI · 01</Badge>
+    <main className="min-h-svh">
+      <header className="border-b">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
+          <span className="text-lg font-semibold">Ghim</span>
+          <Badge variant="outline">UI foundation</Badge>
+        </div>
       </header>
 
-      <section className="hero-grid" id="top" aria-labelledby="hero-title">
-        <div className="hero-copy">
-          <Badge variant="secondary">Thư viện từ vựng của riêng bạn</Badge>
-          <h1 id="hero-title">Gặp từ nào, nhớ từ đó.</h1>
-          <p>
-            Ghim biến những từ tiếng Anh bạn thực sự gặp thành bài ôn ngắn
-            gọn, đúng ngữ cảnh và xuất hiện lại đúng lúc.
-          </p>
-          <div className="hero-actions">
+      <div className="mx-auto grid max-w-6xl gap-16 px-4 py-16 lg:grid-cols-[1fr_24rem] lg:items-center">
+        <section className="space-y-6">
+          <Badge variant="secondary">Từ vựng trong ngữ cảnh thật</Badge>
+          <div className="space-y-4">
+            <h1 className="max-w-2xl text-4xl font-bold tracking-tight sm:text-6xl">
+              Gặp từ nào, nhớ từ đó.
+            </h1>
+            <p className="max-w-2xl text-lg text-muted-foreground">
+              Ghim biến những từ tiếng Anh bạn thực sự gặp thành bài ôn ngắn
+              gọn, đúng ngữ cảnh và xuất hiện lại đúng lúc.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
             <Button size="lg">Mở thư viện</Button>
             <Button size="lg" variant="outline">
               Xem cách hoạt động
             </Button>
           </div>
-        </div>
+        </section>
 
-        <Card className="capture-card" aria-labelledby="capture-title">
+        <Card>
           <CardHeader>
-            <Badge>Vừa ghim</Badge>
-            <CardTitle id="capture-title">serendipity</CardTitle>
+            <CardTitle>serendipity</CardTitle>
             <CardDescription>/ˌser.ənˈdɪp.ə.ti/ · noun</CardDescription>
           </CardHeader>
-          <CardContent className="capture-content">
-            <p className="meaning">sự tình cờ may mắn</p>
-            <blockquote>
+          <CardContent className="space-y-4">
+            <p className="font-medium">sự tình cờ may mắn</p>
+            <p className="text-sm text-muted-foreground">
               “Finding that tiny bookshop was pure serendipity.”
-            </blockquote>
+            </p>
             <Separator />
-            <div className="next-review">
-              <span>Ôn tiếp theo</span>
-              <strong>Ngày mai · 8:20</strong>
+            <div className="flex justify-between gap-4 text-sm">
+              <span className="text-muted-foreground">Ôn tiếp theo</span>
+              <span className="font-medium">Ngày mai · 8:20</span>
             </div>
           </CardContent>
-          <CardFooter>
-            <span aria-hidden="true">◆</span>
+          <CardFooter className="text-sm text-muted-foreground">
             FSRS đang sắp lịch ở phía sau
           </CardFooter>
         </Card>
-      </section>
+      </div>
 
-      <section className="learning-section" aria-labelledby="loop-title">
-        <div className="section-heading">
-          <p>Ba nhịp, một thói quen</p>
-          <h2 id="loop-title">Từ trang đang đọc tới trí nhớ dài hạn.</h2>
-        </div>
-        <ol className="learning-grid">
-          {learningPath.map((item, index) => (
-            <li key={item.title}>
-              <Card className="path-card">
-                <CardHeader>
-                  <span className="catalog-number" aria-hidden="true">
-                    0{index + 1}
-                  </span>
-                  <CardTitle>{item.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>{item.detail}</p>
-                </CardContent>
-              </Card>
-            </li>
+      <section className="border-y bg-muted/40">
+        <div className="mx-auto grid max-w-6xl gap-4 px-4 py-12 md:grid-cols-3">
+          {learningPath.map(([title, description], index) => (
+            <Card key={title}>
+              <CardHeader>
+                <CardDescription>0{index + 1}</CardDescription>
+                <CardTitle>{title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">{description}</p>
+              </CardContent>
+            </Card>
           ))}
-        </ol>
-      </section>
-
-      <section className="specimen-section" aria-labelledby="specimen-title">
-        <div className="section-heading">
-          <p>Kệ mẫu giao diện</p>
-          <h2 id="specimen-title">Những trạng thái người học sẽ gặp.</h2>
-        </div>
-
-        <div className="specimen-grid">
-          <Card>
-            <CardHeader>
-              <CardTitle>Hành động</CardTitle>
-              <CardDescription>
-                Trạng thái thật có thể dùng bằng chuột lẫn bàn phím.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="button-shelf">
-              <div>
-                <span>Mặc định</span>
-                <Button>Thêm vào bộ từ</Button>
-              </div>
-              <div>
-                <span>Hover</span>
-                <Button className="demo-hover">Đã rê chuột</Button>
-              </div>
-              <div>
-                <span>Focus visible</span>
-                <Button className="demo-focus" variant="outline">
-                  Đang focus
-                </Button>
-              </div>
-              <div>
-                <span>Disabled</span>
-                <Button disabled>Chưa thể lưu</Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Nhập từ thủ công</CardTitle>
-              <CardDescription>
-                Label, gợi ý và lỗi luôn có quan hệ rõ ràng.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="form-shelf">
-              <div className="field-group">
-                <Label htmlFor="word-default">Từ tiếng Anh</Label>
-                <Input
-                  aria-describedby="word-hint"
-                  id="word-default"
-                  placeholder="Ví dụ: serendipity"
-                />
-                <p id="word-hint">Nhập một từ hoặc cụm từ ngắn.</p>
-              </div>
-              <div className="field-group">
-                <Label htmlFor="word-invalid">Trạng thái validation</Label>
-                <Input
-                  aria-describedby="word-error"
-                  aria-invalid="true"
-                  defaultValue="a very long sentence"
-                  id="word-invalid"
-                />
-                <p className="field-error" id="word-error">
-                  Chỉ nhập từ hoặc cụm từ cần học.
-                </p>
-              </div>
-              <div className="field-group">
-                <Label htmlFor="word-disabled">Đã khóa</Label>
-                <Input disabled id="word-disabled" value="remember" readOnly />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="contrast-card">
-            <CardHeader>
-              <CardTitle>Độ tương phản cao</CardTitle>
-              <CardDescription>
-                Viền, focus và nội dung vẫn rõ khi hệ điều hành ép màu.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="contrast-preview">
-              <Badge variant="outline">12 từ tới hạn</Badge>
-              <p>Hôm nay chỉ cần một phiên ôn ngắn.</p>
-              <Button variant="outline">Bắt đầu ôn</Button>
-            </CardContent>
-          </Card>
         </div>
       </section>
 
-      <footer className="site-footer">
-        <span>Ghim · Private alpha</span>
-        <span>Một góc thư viện cho những từ đáng nhớ.</span>
-      </footer>
+      <section className="mx-auto grid max-w-6xl gap-8 px-4 py-16 md:grid-cols-2">
+        <div className="space-y-2">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Component mặc định
+          </h2>
+          <p className="text-muted-foreground">
+            Ghim giữ nguyên typography, spacing, radius và interaction của shadcn.
+          </p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Nhập từ thủ công</CardTitle>
+            <CardDescription>Thêm một từ hoặc cụm từ ngắn.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Label htmlFor="word">Từ tiếng Anh</Label>
+            <Input id="word" placeholder="Ví dụ: serendipity" />
+          </CardContent>
+          <CardFooter className="justify-end gap-2">
+            <Button variant="outline">Hủy</Button>
+            <Button>Thêm từ</Button>
+          </CardFooter>
+        </Card>
+      </section>
     </main>
   );
 }

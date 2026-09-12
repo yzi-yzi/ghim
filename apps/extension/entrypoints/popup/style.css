@@ -1,10 +1,4 @@
-:root {
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@import "tailwindcss";
+@import "@ghim/ui/theme.css";
 
-html, body { min-width: 22rem; min-height: 20rem; margin: 0; }
-body { font-family: var(--font-sans); }
-* { box-sizing: border-box; }
+@source "../../../../packages/ui/src";

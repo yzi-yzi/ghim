@@ -45,6 +45,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           if-no-files-found: error
+          include-hidden-files: true
           name: ghim-extension-${{ github.sha }}
           path: apps/extension/.output/ghim-extension-*-chrome.zip
           retention-days: 14

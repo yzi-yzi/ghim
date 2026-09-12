@@ -71,6 +71,18 @@ packages/ui/              Shared UI language and tokens
 packages/observability/   Privacy-safe telemetry boundary
 ```
 
-Authentication UI, Capture UI/API behavior, FSRS integration, and enrichment are
-implemented in their dedicated tickets. The learner-data schema and its atomic
-Capture, Review, and outbox boundaries live under `supabase/`.
+Capture UI/API behavior, FSRS integration, and enrichment are implemented in
+their dedicated tickets. The learner-data schema and its atomic Capture,
+Review, and outbox boundaries live under `supabase/`.
+
+### Google authentication
+
+Google-only authentication for the web and Chrome/Edge extension is configured
+with the repeatable setup wizard and verified with the documented smoke checks:
+
+```bash
+./scripts/setup-google-auth.sh
+```
+
+See [`docs/setup/google-auth.md`](docs/setup/google-auth.md) for the exact trust
+boundaries, redirect URLs and manual checks.

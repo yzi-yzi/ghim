@@ -4,25 +4,26 @@ create extension if not exists pgtap with schema extensions;
 select plan(36);
 
 insert into auth.users (
-  id, instance_id, aud, role, email, encrypted_password, confirmed_at,
+  id, instance_id, aud, role, email, encrypted_password,
   raw_app_meta_data, raw_user_meta_data, created_at, updated_at
 ) values
   (
     'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
     '00000000-0000-0000-0000-000000000000',
-    'authenticated', 'authenticated', 'learner-a@example.test', '', now(),
+    'authenticated', 'authenticated', 'learner-a@example.test', '',
     '{"provider":"google","providers":["google"]}', '{}', now(), now()
   ),
   (
     'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
     '00000000-0000-0000-0000-000000000000',
-    'authenticated', 'authenticated', 'learner-b@example.test', '', now(),
+    'authenticated', 'authenticated', 'learner-b@example.test', '',
     '{"provider":"google","providers":["google"]}', '{}', now(), now()
   );
 
-insert into public.learners (id, display_name) values
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'Learner A'),
-  ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'Learner B');
+update public.learners set display_name = 'Learner A'
+where id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+update public.learners set display_name = 'Learner B'
+where id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 
 insert into public.decks (owner_id, kind, name) values
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'personal', 'Reading');

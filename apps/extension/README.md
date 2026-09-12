@@ -12,14 +12,17 @@ Microsoft Edge; WXT also builds an Edge target from the same entrypoints.
 
 ## Permission baseline
 
-The foundation requests no extension or host permissions. The content-script
-entrypoint uses runtime registration and is not injected yet. The Capture ticket
-must justify each permission it adds—expected candidates are `activeTab`,
-`contextMenus`, and `scripting` following an explicit user gesture. Broad
-`<all_urls>` host access is not part of this foundation.
+Authentication requests only `identity` and `storage`, plus host access to the
+configured Ghim API and Supabase origins. The content script never receives or
+stores access/refresh tokens. The Capture ticket must justify each additional
+permission it adds—expected candidates are `activeTab`, `contextMenus`, and
+`scripting` following an explicit user gesture. Broad `<all_urls>` host access
+is not part of the extension.
 
-Authentication, live Capture requests, offline retry, Firefox, and Safari are
-deliberately outside this ticket.
+Live Capture requests, Firefox, and Safari remain outside this ticket. Auth
+state and PKCE exchange live in the background worker. Signing out clears only
+the Supabase session; a future offline Capture queue uses a separate storage
+key so expired or revoked sessions cannot delete unsent words.
 
 API contracts and the typed client boundary belong to `@ghim/api`. Extension
 features consume that shared boundary directly rather than maintaining a local

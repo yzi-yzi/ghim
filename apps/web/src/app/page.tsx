@@ -11,6 +11,11 @@ import {
   Label,
   Separator,
 } from "@ghim/ui";
+import Link from "next/link";
+
+import { signInWithGoogle } from "@/app/auth/actions";
+import { getSupabasePublicConfig } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/server";
 
 const learningPath = [
   ["Bắt gặp", "Chọn một từ ngay trên nội dung bạn đang đọc."],
@@ -18,13 +23,26 @@ const learningPath = [
   ["Nhớ lâu", "Ôn ngắn gọn khi FSRS xác định từ đã tới hạn."],
 ] as const;
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const hasAuthConfig = getSupabasePublicConfig() !== null;
+  const claims = hasAuthConfig
+    ? (await (await createClient()).auth.getClaims()).data?.claims
+    : null;
+
   return (
     <main className="min-h-svh">
       <header className="border-b">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
           <span className="text-lg font-semibold">Ghim</span>
-          <Badge variant="outline">UI foundation</Badge>
+          {claims ? (
+            <Button render={<Link href="/library" />} variant="outline">
+              Mở thư viện
+            </Button>
+          ) : (
+            <Badge variant="outline">Google Auth</Badge>
+          )}
         </div>
       </header>
 
@@ -41,11 +59,26 @@ export default function HomePage() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button size="lg">Mở thư viện</Button>
+            {claims ? (
+              <Button render={<Link href="/library" />} size="lg">
+                Mở thư viện
+              </Button>
+            ) : (
+              <form action={signInWithGoogle}>
+                <Button disabled={!hasAuthConfig} size="lg" type="submit">
+                  Tiếp tục với Google
+                </Button>
+              </form>
+            )}
             <Button size="lg" variant="outline">
               Xem cách hoạt động
             </Button>
           </div>
+          {!hasAuthConfig ? (
+            <p className="text-sm text-muted-foreground">
+              Thêm cấu hình Supabase để bật đăng nhập Google.
+            </p>
+          ) : null}
         </section>
 
         <Card>

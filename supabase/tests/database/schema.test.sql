@@ -1,7 +1,7 @@
 begin;
 
 create extension if not exists pgtap with schema extensions;
-select plan(23);
+select plan(26);
 
 select has_table('public', 'learners', 'learners table exists');
 select has_table('public', 'decks', 'decks table exists');
@@ -19,6 +19,26 @@ select has_table('public', 'entitlement_usage_events', 'entitlement ledger exist
 select has_table('public', 'motivation_events', 'motivation ledger exists');
 select has_table('public', 'learner_day_rollups', 'learner day projection exists');
 select col_is_pk('public', 'learners', 'id', 'learner identity is the auth user identity');
+select has_function(
+  'private',
+  'provision_google_learner',
+  array[]::text[],
+  'Google signup has one server-owned Learner provisioning boundary'
+);
+select has_trigger(
+  'auth',
+  'users',
+  'provision_google_learner_after_auth_signup',
+  'auth signup provisions the Learner atomically'
+);
+select ok(
+  not has_function_privilege(
+    'authenticated',
+    'private.provision_google_learner()',
+    'execute'
+  ),
+  'browser-authenticated clients cannot invoke Learner provisioning'
+);
 select has_function(
   'public',
   'capture_vocabulary_encounter',

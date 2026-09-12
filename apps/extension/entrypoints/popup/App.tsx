@@ -21,7 +21,7 @@ function App() {
 
       <footer>
         <span>Chrome · Edge</span>
-        <span>Foundation 0.0.0</span>
+        <span>Foundation</span>
       </footer>
     </main>
   );

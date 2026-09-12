@@ -40,6 +40,7 @@ npm run check
 
 ```text
 apps/web/                 Next.js application
+apps/extension/           WXT browser extension for Chrome and Edge
 packages/domain/          Product rules and vocabulary language
 packages/scheduler/       Scheduling boundary
 packages/api/             API contracts and error envelopes
@@ -48,4 +49,4 @@ packages/ui/              Shared UI language and tokens
 packages/observability/   Privacy-safe telemetry boundary
 ```
 
-Production database migrations, authentication, the browser extension, FSRS integration, and enrichment are intentionally deferred to their own implementation tickets.
+Production database migrations, authentication, Capture behavior, FSRS integration, and enrichment are intentionally deferred to their own implementation tickets.

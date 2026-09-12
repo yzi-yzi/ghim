@@ -16,6 +16,7 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
+    "@ghim/api": "0.0.0",
     "@ghim/ui": "0.0.0",
     "react": "19.3.0",
     "react-dom": "19.3.0"

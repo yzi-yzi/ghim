@@ -1,12 +1,27 @@
 "use client";
 
-// Three variants of the Capture + Daily Review loop, switchable via ?variant=, on the throwaway /prototype/core-loop route.
-
 import { useEffect, useMemo, useState } from "react";
 
-import { Badge, Button } from "@ghim/ui";
-
-import "./prototype.css";
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@ghim/ui";
+import { Progress } from "@ghim/ui/components/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@ghim/ui/components/select";
+import { Separator } from "@ghim/ui/components/separator";
+import { Spinner } from "@ghim/ui/components/spinner";
 
 const variants = ["A", "B", "C"] as const;
 type Variant = (typeof variants)[number];
@@ -15,15 +30,19 @@ type ReviewResult = "forgot" | "remembered" | null;
 
 const variantNames: Record<Variant, string> = {
   A: "Một đường thẳng",
-  B: "Bàn thủ thư",
-  C: "Nghi thức tập trung",
+  B: "Không gian làm việc",
+  C: "Tập trung từng việc",
 };
 
 function isVariant(value: string | undefined): value is Variant {
   return variants.includes(value as Variant);
 }
 
-export function CoreLoopPrototype({ initialVariant }: { initialVariant: string | undefined }) {
+export function CoreLoopPrototype({
+  initialVariant,
+}: {
+  initialVariant: string | undefined;
+}) {
   const [variant, setVariant] = useState<Variant>(
     isVariant(initialVariant) ? initialVariant : "A",
   );
@@ -72,15 +91,19 @@ export function CoreLoopPrototype({ initialVariant }: { initialVariant: string |
     function onKeyDown(event: KeyboardEvent) {
       const target = event.target as HTMLElement | null;
       if (target?.matches("input, textarea, select, [contenteditable='true']")) return;
-      if (event.key === "ArrowLeft") cycleVariant(-1);
-      if (event.key === "ArrowRight") cycleVariant(1);
+
+      const direction = event.key === "ArrowLeft" ? -1 : event.key === "ArrowRight" ? 1 : 0;
+      if (direction === 0) return;
+
+      const index = variants.indexOf(variant);
+      changeVariant(variants[(index + direction + variants.length) % variants.length]!);
     }
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  });
+  }, [variant]);
 
-  const actions = {
+  const actions: PrototypeActions = {
     answer: setReviewResult,
     openReview,
     reset,
@@ -91,7 +114,7 @@ export function CoreLoopPrototype({ initialVariant }: { initialVariant: string |
   };
 
   return (
-    <main className={`core-prototype variant-${variant.toLowerCase()}`}>
+    <main className="min-h-svh pb-24">
       {variant === "A" && <VariantA state={state} actions={actions} />}
       {variant === "B" && <VariantB state={state} actions={actions} />}
       {variant === "C" && <VariantC state={state} actions={actions} />}
@@ -99,11 +122,13 @@ export function CoreLoopPrototype({ initialVariant }: { initialVariant: string |
       <StateLedger state={state} />
 
       {process.env.NODE_ENV !== "production" && (
-        <nav className="prototype-switcher" aria-label="Chọn phương án prototype">
-          <button type="button" onClick={() => cycleVariant(-1)} aria-label="Phương án trước">←</button>
-          <span><strong>{variant}</strong> · {variantNames[variant]}</span>
-          <button type="button" onClick={() => cycleVariant(1)} aria-label="Phương án sau">→</button>
-        </nav>
+        <Card className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2">
+          <CardContent className="flex items-center gap-3 py-2">
+            <Button size="icon-sm" variant="ghost" onClick={() => cycleVariant(-1)} aria-label="Phương án trước">←</Button>
+            <span className="min-w-44 text-center text-sm"><strong>{variant}</strong> · {variantNames[variant]}</span>
+            <Button size="icon-sm" variant="ghost" onClick={() => cycleVariant(1)} aria-label="Phương án sau">→</Button>
+          </CardContent>
+        </Card>
       )}
     </main>
   );
@@ -128,109 +153,157 @@ type PrototypeActions = {
 };
 
 function VariantA({ state, actions }: { state: PrototypeState; actions: PrototypeActions }) {
+  const progress = state.captureStage === "selected" ? 33 : state.captureStage === "enriching" ? 66 : 100;
+
   return (
-    <div className="a-shell">
+    <div className="mx-auto max-w-4xl space-y-8 px-4 py-8">
       <PrototypeHeader kicker="Phương án A · Một đường thẳng" />
-      <div className="a-progress" aria-label="Tiến trình">
-        {[
-          ["01", "Bắt gặp"], ["02", "Ghim lại"], ["03", "Ôn lần đầu"],
-        ].map(([number, label], index) => (
-          <div className={index <= (state.captureStage === "selected" ? 0 : state.captureStage === "enriching" ? 1 : 2) ? "is-active" : ""} key={number}>
-            <span>{number}</span><strong>{label}</strong>
-          </div>
-        ))}
-      </div>
-      <section className="a-stage">
-        {state.mode === "capture" ? (
-          <>
-            <p className="source-line">The Marginalian · 8 phút đọc</p>
-            <blockquote>“Attention is the rarest and purest form of <mark>generosity</mark>.”</blockquote>
-            <div className="word-row"><div><span>Từ đã chọn</span><h1>generosity</h1><p>/ˌdʒen.əˈrɒs.ə.ti/ · noun</p></div><Badge variant="outline">Có câu gốc</Badge></div>
-            <DeckPicker value={state.deck} onChange={actions.setDeck} />
-            <CaptureAction deck={state.deck} stage={state.captureStage} onSave={actions.saveWord} onReview={actions.openReview} />
-          </>
-        ) : (
-          <ReviewCard state={state} actions={actions} compact={false} />
-        )}
+      <section className="space-y-3">
+        <div className="flex justify-between text-sm text-muted-foreground"><span>Bắt gặp</span><span>Ghim lại</span><span>Ôn lần đầu</span></div>
+        <Progress value={progress} />
       </section>
-      <button className="text-action" type="button" onClick={actions.reset}>↺ Bắt đầu lại kịch bản</button>
+      {state.mode === "capture" ? <CaptureCard state={state} actions={actions} showContext /> : <ReviewCard state={state} actions={actions} />}
+      <Button variant="ghost" onClick={actions.reset}>Bắt đầu lại kịch bản</Button>
     </div>
   );
 }
 
 function VariantB({ state, actions }: { state: PrototypeState; actions: PrototypeActions }) {
   return (
-    <div className="b-shell">
-      <aside className="b-sidebar">
-        <PrototypeHeader kicker="Phương án B · Bàn thủ thư" />
-        <nav aria-label="Khu vực prototype">
-          <button className={state.mode === "capture" ? "active" : ""} onClick={() => actions.setMode("capture")} type="button">⌁ Hộp thư từ mới <span>1</span></button>
-          <button className={state.mode === "review" ? "active" : ""} onClick={actions.openReview} type="button">◫ Bàn ôn hôm nay <span>12</span></button>
+    <div className="mx-auto grid min-h-svh max-w-7xl md:grid-cols-[16rem_1fr]">
+      <aside className="space-y-8 border-r p-4">
+        <PrototypeHeader kicker="Phương án B · Không gian làm việc" />
+        <nav className="grid gap-2" aria-label="Khu vực prototype">
+          <Button className="justify-between" variant={state.mode === "capture" ? "secondary" : "ghost"} onClick={() => actions.setMode("capture")}>
+            Hộp thư từ mới <Badge variant="outline">1</Badge>
+          </Button>
+          <Button className="justify-between" variant={state.mode === "review" ? "secondary" : "ghost"} onClick={actions.openReview}>
+            Bàn ôn hôm nay <Badge variant="outline">12</Badge>
+          </Button>
         </nav>
-        <div className="streak-stamp"><strong>7</strong><span>ngày giữ nhịp</span></div>
+        <Card><CardHeader><CardDescription>Chuỗi hiện tại</CardDescription><CardTitle>7 ngày</CardTitle></CardHeader></Card>
       </aside>
-      <section className="b-reading">
-        <p className="eyebrow">Ngữ cảnh đang đọc</p>
-        <h1>On attention and generosity</h1>
-        <p>We give our attention to the things we care about. Attention is the rarest and purest form of <mark>generosity</mark>.</p>
-        <small>the-marginalian.com · lưu riêng tư</small>
-      </section>
-      <section className="b-desk">
-        <div className="desk-label"><span>{state.mode === "capture" ? "PHIẾU TỪ MỚI" : "PHIẾU ÔN 03/12"}</span><button type="button" onClick={actions.reset}>Làm lại</button></div>
-        {state.mode === "capture" ? (
-          <div className="catalog-card">
-            <span className="catalog-index">G–019</span>
-            <h2>generosity</h2><p className="pronunciation">/ˌdʒen.əˈrɒs.ə.ti/ · noun</p>
-            <DeckPicker value={state.deck} onChange={actions.setDeck} />
-            <CaptureAction deck={state.deck} stage={state.captureStage} onSave={actions.saveWord} onReview={actions.openReview} />
+
+      <div className="grid gap-8 p-4 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,1fr)] lg:p-8">
+        <section className="space-y-4">
+          <Badge variant="secondary">Ngữ cảnh đang đọc</Badge>
+          <h1 className="text-3xl font-bold tracking-tight">On attention and generosity</h1>
+          <p className="leading-7 text-muted-foreground">We give our attention to the things we care about. Attention is the rarest and purest form of <mark>generosity</mark>.</p>
+          <p className="text-sm text-muted-foreground">the-marginalian.com · lưu riêng tư</p>
+        </section>
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <Badge variant="outline">{state.mode === "capture" ? "Từ mới" : "Ôn 03/12"}</Badge>
+            <Button size="sm" variant="ghost" onClick={actions.reset}>Làm lại</Button>
           </div>
-        ) : <ReviewCard state={state} actions={actions} compact />}
-      </section>
+          {state.mode === "capture" ? <CaptureCard state={state} actions={actions} /> : <ReviewCard state={state} actions={actions} />}
+        </section>
+      </div>
     </div>
   );
 }
 
 function VariantC({ state, actions }: { state: PrototypeState; actions: PrototypeActions }) {
-  const captureReady = state.captureStage === "ready";
   return (
-    <div className="c-shell">
-      <header className="c-header"><PrototypeHeader kicker="Phương án C · Nghi thức tập trung" /><span>{state.mode === "capture" ? "1 / 2" : "2 / 2"}</span></header>
-      <section className="c-focus">
-        {state.mode === "capture" ? (
-          <>
-            <Badge variant="secondary">Bạn vừa gặp từ này</Badge>
-            <h1>generosity</h1>
-            <p className="c-context">“Attention is the rarest and purest form of generosity.”</p>
-            {state.captureStage === "selected" && <><DeckPicker value={state.deck} onChange={actions.setDeck} /><Button size="lg" onClick={actions.saveWord}>Ghim từ này</Button></>}
-            {state.captureStage === "enriching" && <div className="quiet-loader"><span />Đang tra nghĩa theo câu bạn đọc…</div>}
-            {captureReady && <div className="c-reveal"><p className="eyebrow">Đã chuẩn bị xong</p><h2>sự hào phóng; lòng rộng lượng</h2><p>Cho đi nhiều hơn mức cần thiết, đặc biệt về thời gian, tiền bạc hoặc sự quan tâm.</p><Button size="lg" onClick={actions.openReview}>Thử nhớ ngay</Button></div>}
-          </>
-        ) : <ReviewCard state={state} actions={actions} compact={false} />}
-      </section>
-      <button className="text-action" type="button" onClick={actions.reset}>Thoát kịch bản</button>
+    <div className="mx-auto flex min-h-svh max-w-3xl flex-col px-4 py-8">
+      <div className="flex items-center justify-between">
+        <PrototypeHeader kicker="Phương án C · Tập trung từng việc" />
+        <Badge variant="outline">{state.mode === "capture" ? "1 / 2" : "2 / 2"}</Badge>
+      </div>
+      <div className="my-auto py-12">
+        {state.mode === "capture" ? <CaptureCard state={state} actions={actions} showContext /> : <ReviewCard state={state} actions={actions} />}
+      </div>
+      <Button className="self-center" variant="ghost" onClick={actions.reset}>Thoát kịch bản</Button>
     </div>
   );
 }
 
 function PrototypeHeader({ kicker }: { kicker: string }) {
-  return <div className="prototype-brand"><span aria-hidden="true">G</span><div><strong>Ghim</strong><small>{kicker}</small></div></div>;
+  return <div><p className="text-lg font-semibold">Ghim</p><p className="text-sm text-muted-foreground">{kicker}</p></div>;
+}
+
+function CaptureCard({ state, actions, showContext = false }: { state: PrototypeState; actions: PrototypeActions; showContext?: boolean }) {
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between gap-4"><Badge variant="secondary">Bạn vừa gặp từ này</Badge>{showContext && <Badge variant="outline">Có câu gốc</Badge>}</div>
+        <CardTitle className="text-4xl">generosity</CardTitle>
+        <CardDescription>/ˌdʒen.əˈrɒs.ə.ti/ · noun</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {showContext && <p className="text-sm text-muted-foreground">“Attention is the rarest and purest form of generosity.”</p>}
+        <DeckPicker value={state.deck} onChange={actions.setDeck} />
+        <CaptureResult stage={state.captureStage} onReview={actions.openReview} />
+      </CardContent>
+      {state.captureStage === "selected" && <CardFooter className="justify-end"><Button onClick={actions.saveWord}>Ghim vào “{state.deck}”</Button></CardFooter>}
+    </Card>
+  );
 }
 
 function DeckPicker({ value, onChange }: { value: string; onChange: (value: string) => void }) {
-  return <label className="deck-picker"><span>Lưu vào bộ từ</span><select value={value} onChange={(event) => onChange(event.target.value)}><option>Từ khi đọc báo</option><option>Công việc</option><option>Du lịch</option></select></label>;
+  return (
+    <div className="space-y-2">
+      <p className="text-sm font-medium">Lưu vào bộ từ</p>
+      <Select value={value} onValueChange={(next) => next && onChange(next)}>
+        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+        <SelectContent>
+          <SelectItem value="Từ khi đọc báo">Từ khi đọc báo</SelectItem>
+          <SelectItem value="Công việc">Công việc</SelectItem>
+          <SelectItem value="Du lịch">Du lịch</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  );
 }
 
-function CaptureAction({ deck, stage, onSave, onReview }: { deck: string; stage: CaptureStage; onSave: () => void; onReview: () => void }) {
-  if (stage === "enriching") return <div className="enrichment-status"><span />Đang tìm đúng nghĩa trong ngữ cảnh…</div>;
-  if (stage === "ready") return <div className="enriched-result"><Badge>Đã ghim</Badge><h3>sự hào phóng; lòng rộng lượng</h3><p>Ví dụ và phát âm đã sẵn sàng. Bạn có thể thử nhớ ngay hoặc quay lại đọc tiếp.</p><Button onClick={onReview}>Ôn lần đầu</Button></div>;
-  return <Button size="lg" onClick={onSave}>Ghim vào “{deck}”</Button>;
+function CaptureResult({ stage, onReview }: { stage: CaptureStage; onReview: () => void }) {
+  if (stage === "selected") return null;
+  if (stage === "enriching") return <div className="flex items-center gap-2 text-sm text-muted-foreground"><Spinner /> Đang tìm đúng nghĩa trong ngữ cảnh…</div>;
+
+  return (
+    <div className="space-y-4">
+      <Separator />
+      <div className="space-y-2">
+        <Badge>Đã ghim</Badge>
+        <h3 className="font-semibold">sự hào phóng; lòng rộng lượng</h3>
+        <p className="text-sm text-muted-foreground">Ví dụ và phát âm đã sẵn sàng. Bạn có thể thử nhớ ngay hoặc quay lại đọc tiếp.</p>
+      </div>
+      <Button onClick={onReview}>Ôn lần đầu</Button>
+    </div>
+  );
 }
 
-function ReviewCard({ state, actions, compact }: { state: PrototypeState; actions: PrototypeActions; compact: boolean }) {
-  if (state.reviewResult) return <div className="review-complete"><span className="completion-mark">✓</span><h2>{state.reviewResult === "remembered" ? "Tốt lắm, hẹn gặp lại sau." : "Không sao, từ này sẽ quay lại sớm."}</h2><p>{state.reviewResult === "remembered" ? "FSRS đã xếp lần ôn tiếp theo sau 3 ngày." : "Ghim sẽ cho bạn gặp lại trong phiên hôm nay."}</p><Button variant="outline" onClick={actions.reset}>Xem lại từ đầu</Button></div>;
-  return <div className={`review-card ${compact ? "is-compact" : ""}`}><p className="eyebrow">Ôn 03 / 12 · Nhận diện</p><h2>{state.reviewRevealed ? "sự hào phóng; lòng rộng lượng" : "generosity"}</h2><blockquote>“Attention is the rarest and purest form of generosity.”</blockquote>{!state.reviewRevealed ? <Button size="lg" onClick={actions.reveal}>Xem nghĩa</Button> : <><p className="answer-note">Bạn có nhận ra đúng nghĩa này trước khi mở đáp án không?</p><div className="answer-actions"><Button variant="outline" onClick={() => actions.answer("forgot")}>Quên</Button><Button onClick={() => actions.answer("remembered")}>Nhớ</Button></div></>}</div>;
+function ReviewCard({ state, actions }: { state: PrototypeState; actions: PrototypeActions }) {
+  if (state.reviewResult) {
+    return (
+      <Card>
+        <CardHeader>
+          <Badge className="w-fit">Hoàn thành</Badge>
+          <CardTitle>{state.reviewResult === "remembered" ? "Tốt lắm, hẹn gặp lại sau." : "Không sao, từ này sẽ quay lại sớm."}</CardTitle>
+          <CardDescription>{state.reviewResult === "remembered" ? "FSRS đã xếp lần ôn tiếp theo sau 3 ngày." : "Ghim sẽ cho bạn gặp lại trong phiên hôm nay."}</CardDescription>
+        </CardHeader>
+        <CardFooter><Button variant="outline" onClick={actions.reset}>Xem lại từ đầu</Button></CardFooter>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardDescription>Ôn 03 / 12 · Nhận diện</CardDescription>
+        <CardTitle className="text-4xl">{state.reviewRevealed ? "sự hào phóng; lòng rộng lượng" : "generosity"}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-sm text-muted-foreground">“Attention is the rarest and purest form of generosity.”</p>
+        {state.reviewRevealed && <p className="text-sm">Bạn có nhận ra đúng nghĩa này trước khi mở đáp án không?</p>}
+      </CardContent>
+      <CardFooter className="gap-2">
+        {!state.reviewRevealed ? <Button onClick={actions.reveal}>Xem nghĩa</Button> : <><Button variant="outline" onClick={() => actions.answer("forgot")}>Quên</Button><Button onClick={() => actions.answer("remembered")}>Nhớ</Button></>}
+      </CardFooter>
+    </Card>
+  );
 }
 
 function StateLedger({ state }: { state: PrototypeState }) {
-  return <details className="state-ledger"><summary>Prototype state</summary><pre>{JSON.stringify(state, null, 2)}</pre></details>;
+  return <details className="fixed right-4 bottom-4 z-40 w-60 rounded-lg border bg-card p-3 text-xs text-muted-foreground"><summary className="cursor-pointer font-medium">Prototype state</summary><pre className="mt-2 overflow-auto">{JSON.stringify(state, null, 2)}</pre></details>;
 }
